@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-12-08
  */
 public interface IMeishifenleiService extends IService<Meishifenlei> {
-
+    // 继承IService即可,已包含基础的CRUD方法
 }

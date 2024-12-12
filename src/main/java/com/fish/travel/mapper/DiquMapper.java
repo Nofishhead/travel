@@ -1,16 +1,9 @@
 package com.fish.travel.mapper;
 
-import com.fish.travel.entity.Diqu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fish.travel.entity.Diqu;
+import org.apache.ibatis.annotations.Mapper;
 
-/**
- * <p>
- * 地区 Mapper 接口
- * </p>
- *
- * @author fish
- * @since 2024-12-08
- */
+@Mapper
 public interface DiquMapper extends BaseMapper<Diqu> {
-
 }

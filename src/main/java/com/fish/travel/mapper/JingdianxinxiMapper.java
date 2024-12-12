@@ -1,16 +1,17 @@
 package com.fish.travel.mapper;
 
-import com.fish.travel.entity.Jingdianxinxi;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.fish.travel.entity.Jingdianxinxi;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import java.util.List;
+import java.util.Map;
 
-/**
- * <p>
- * 景点信息 Mapper 接口
- * </p>
- *
- * @author fish
- * @since 2024-12-08
- */
+@Mapper
 public interface JingdianxinxiMapper extends BaseMapper<Jingdianxinxi> {
-
+    
+    @Select("SELECT j.*, d.diqumingcheng as suoshudiquName " +
+            "FROM jingdianxinxi j " +
+            "LEFT JOIN diqu d ON j.suoshudiqu = d.id")
+    List<Map<String, Object>> selectListWithDiqu();
 }
