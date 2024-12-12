@@ -3,14 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^1.6.7",
     "core-js": "^3.8.3",
+    "element-plus": "^2.5.6",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "@element-plus/icons-vue": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -36,9 +42,21 @@
       "@vue/standard"
     ],
     "parserOptions": {
-      "parser": "@babel/eslint-parser"
+      "parser": "@babel/eslint-parser",
+      "requireConfigFile": false
     },
-    "rules": {}
+    "rules": {
+      "no-trailing-spaces": "off",
+      "eol-last": "off",
+      "comma-dangle": "off",
+      "space-before-function-paren": "off",
+      "quotes": "off",
+      "semi": "off",
+      "no-unused-vars": "off",
+      "vue/no-unused-components": "off",
+      "vue/multi-word-component-names": "off",
+      "no-multiple-empty-lines": "off"
+    }
   },
   "browserslist": [
     "> 1%",
