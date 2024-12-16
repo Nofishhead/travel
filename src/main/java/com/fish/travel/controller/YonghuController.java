@@ -1,12 +1,11 @@
 package com.fish.travel.controller;
 
 import com.fish.travel.Result.Result;
+import com.fish.travel.dto.UserLoginDTO;
+import com.fish.travel.dto.UserRegisterDTO;
 import com.fish.travel.service.impl.YonghuServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -30,6 +29,24 @@ public class YonghuController {
 
         return Result.success(yonghuService.list());
 
+    }
+
+    // 用户登录
+    @PostMapping("/login")
+    public Result login(@RequestBody UserLoginDTO loginDTO) {
+        return yonghuService.login(loginDTO);
+    }
+
+    // 用户注册
+    @PostMapping("/register") 
+    public Result register(@RequestBody UserRegisterDTO registerDTO) {
+        return yonghuService.register(registerDTO);
+    }
+
+    // 用户退出登录
+    @PostMapping("/logout")
+    public Result logout(@RequestHeader("token") String token) {
+        return yonghuService.logout(token);
     }
 
 }
