@@ -1,5 +1,5 @@
 <template>
-  <div class="route-order">
+  <div class="order-list">
     <el-card>
       <template #header>
         <div class="card-header">
@@ -7,20 +7,22 @@
         </div>
       </template>
 
-      <!-- 预订列表表格 -->
       <el-table :data="tableData" style="width: 100%" v-loading="loading">
         <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="yudingbianhao" label="预订编号" width="120" />
+        <el-table-column prop="lvyouxianluid" label="旅游线路id" width="120" />
         <el-table-column prop="xianlubianhao" label="线路编号" width="120" />
-        <el-table-column prop="xianlumingcheng" label="线路名称" width="150" />
-        <el-table-column prop="yonghuming" label="预订用户" width="120" />
-        <el-table-column prop="lianxidianhua" label="联系电话" width="120" />
-        <el-table-column prop="jiage" label="价格" width="80" align="center">
+        <el-table-column prop="xianlumingcheng" label="线路名称" width="120" />
+        <el-table-column prop="chufadi" label="出发地" width="100" />
+        <el-table-column prop="tujingdi" label="途经地" width="120" />
+        <el-table-column prop="zhongdian" label="终点" width="100" />
+        <el-table-column prop="jiage" label="价格" width="100" align="center">
           <template #default="scope">
             <span class="price">{{ scope.row.jiage }}元</span>
           </template>
         </el-table-column>
-        <el-table-column prop="beizhu" label="备注" show-overflow-tooltip />
+        <el-table-column prop="dingdanhao" label="订单号" width="120" />
+        <el-table-column prop="yudingrenxingming" label="预订人" width="100" />
+        <el-table-column prop="lianxifangshi" label="联系方式" width="120" />
         <el-table-column prop="zhuangtai" label="状态" width="100">
           <template #default="scope">
             <el-tag :type="getStatusType(scope.row.zhuangtai)">
@@ -28,22 +30,23 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="addtime" label="预订时间" width="180">
+        <el-table-column prop="iszf" label="支付状态" width="100">
           <template #default="scope">
-            {{ formatDate(scope.row.addtime) }}
+            <el-tag :type="scope.row.iszf === '是' ? 'success' : 'warning'">
+              {{ scope.row.iszf === '是' ? '已支付' : '未支付' }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column prop="beizhu" label="备注" width="120" show-overflow-tooltip>
           <template #default="scope">
-            <el-button
-              size="small"
-              type="success"
-              link
-              @click="handleStatus(scope.row)"
-              v-if="scope.row.zhuangtai === '待确认'"
-            >
-              确认
-            </el-button>
+            <el-tooltip :content="scope.row.beizhu" placement="top">
+              <span>{{ scope.row.beizhu || '备注...' }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column prop="yudingshijian" label="预订时间" width="160" />
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="scope">
             <el-button size="small" type="danger" link @click="handleDelete(scope.row)">
               删除
             </el-button>
@@ -62,7 +65,19 @@ import request from '@/utils/request'
 const loading = ref(false)
 const tableData = ref([])
 
-// 获取���订列表
+// 获取状态标签类型
+const getStatusType = (status) => {
+  switch (status) {
+    case '预定成功':
+      return 'success'
+    case '待支付':
+      return 'warning'
+    default:
+      return 'info'
+  }
+}
+
+// 获取预定列表
 const getList = async () => {
   loading.value = true
   try {
@@ -72,62 +87,16 @@ const getList = async () => {
     })
     tableData.value = res.data || []
   } catch (error) {
-    console.error('获取预订列表失败:', error)
-    ElMessage.error('获取预订列表失败')
+    ElMessage.error('获取预定列表失败')
   } finally {
     loading.value = false
   }
 }
 
-// 格式化日期
-const formatDate = (dateStr) => {
-  if (!dateStr) return ''
-  const date = new Date(dateStr)
-  return date.toLocaleString()
-}
-
-// 获取状态标签类型
-const getStatusType = (status) => {
-  switch (status) {
-    case '待确认':
-      return 'warning'
-    case '已确认':
-      return 'success'
-    case '已取消':
-      return 'info'
-    default:
-      return ''
-  }
-}
-
-// 确认预订
-const handleStatus = (row) => {
-  ElMessageBox.confirm(
-    `确定要确认此预订吗？`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'info',
-    }
-  ).then(async () => {
-    try {
-      await request({
-        url: `/travel/yuding/confirm/${row.id}`,
-        method: 'put'
-      })
-      ElMessage.success('确认成功')
-      getList()
-    } catch (error) {
-      ElMessage.error('确认失败')
-    }
-  })
-}
-
-// 删除预订
+// 删除预定
 const handleDelete = (row) => {
   ElMessageBox.confirm(
-    `确定要删除此预订记录吗？`,
+    `确定要删除订单号为 ${row.dingdanhao} 的预定记录吗？`,
     '警告',
     {
       confirmButtonText: '确定',
@@ -154,7 +123,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.route-order {
+.order-list {
   padding: 0 15px;
 }
 

@@ -55,6 +55,7 @@ import { ref, reactive, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
+import request from '@/utils/request'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -74,18 +75,24 @@ const rules = {
   ]
 }
 
-const handleLogin = () => {
-  loginFormRef.value.validate(async (valid) => {
+const handleLogin = async () => {
+  if (!loginFormRef.value) return
+  await loginFormRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        await userStore.login(loginForm)
-        ElMessage.success('登录成功')
-        nextTick(() => {
-          router.push('/admin/dashboard')
+        const res = await request({
+          url: '/travel/admins/login',
+          method: 'post',
+          data: loginForm
         })
+        console.log('登录响应:', res)
+        if (res.code === '200') {
+          localStorage.setItem('token', res.data.token)
+          console.log('存储的token:', localStorage.getItem('token'))
+          router.push('/admin/dashboard')
+        }
       } catch (error) {
-        console.error('登录失败:', error)
-        ElMessage.error(error.message || '登录失败')
+        ElMessage.error('登录失败')
       }
     }
   })

@@ -1,16 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import AdminLayout from '@/views/layout/AdminLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/user/login'
   },
   {
-    path: '/login',
-    name: 'login',
-    component: LoginView
+    path: '/admin/login',
+    name: 'adminLogin',
+    component: () => import('@/views/LoginView.vue')
+  },
+  {
+    path: '/user/login',
+    name: 'userLogin',
+    component: () => import('@/views/user/LoginView.vue')
   },
   {
     path: '/admin',
@@ -81,19 +86,25 @@ const routes = [
         meta: { title: '友情链接' }
       }
     ]
+  },
+  {
+    path: '/user/home',
+    name: 'userHome',
+    component: () => import('@/views/user/HomeView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
 })
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  if (to.path !== '/login' && !token) {
-    next('/login')
+  if (to.meta.requiresAuth && !token) {
+    next('/user/login')
   } else {
     next()
   }
