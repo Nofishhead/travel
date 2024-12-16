@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -26,11 +27,24 @@ public class LunbotuController {
     // 获取轮播图列表
     @GetMapping("/list")
     public Result list() {
-        return Result.success(lunbotuService.list());
+        List<Lunbotu> list = lunbotuService.list();
+        // 清理图片路径中的换行符
+        for (Lunbotu lunbotu : list) {
+            if (lunbotu.getImage() != null) {
+                lunbotu.setImage(lunbotu.getImage().trim());
+            }
+        }
+        for (Lunbotu lunbotu : list) {
+            System.out.println("轮播图: id=" + lunbotu.getId() 
+                + ", title=" + lunbotu.getTitle() 
+                + ", image=" + lunbotu.getImage()
+                + ", url=" + lunbotu.getUrl());
+        }
+        return Result.success(list);
     }
 
     // 添加轮播图
-    @PostMapping
+    @PostMapping("/add")
     public Result add(@RequestBody Lunbotu lunbotu) {
         lunbotu.setAddtime(LocalDateTime.now());
         boolean success = lunbotuService.save(lunbotu);
@@ -38,9 +52,8 @@ public class LunbotuController {
     }
 
     // 修改轮播图
-    @PutMapping("/{id}")
-    public Result update(@PathVariable Integer id, @RequestBody Lunbotu lunbotu) {
-        lunbotu.setId(id);
+    @PutMapping("/update")
+    public Result update(@RequestBody Lunbotu lunbotu) {
         boolean success = lunbotuService.updateById(lunbotu);
         return success ? Result.success() : Result.fail("修改失败");
     }

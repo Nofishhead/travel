@@ -5,6 +5,7 @@ import com.fish.travel.mapper.JingdianxinxiMapper;
 import com.fish.travel.Result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,18 @@ public class JingdianxinxiController {
 
     @Autowired
     private JingdianxinxiMapper jingdianxinxiMapper;
+
+    // 获取热门景点
+    @GetMapping("/hot")
+    public Result getHotScenics() {
+        QueryWrapper<Jingdianxinxi> queryWrapper = new QueryWrapper<>();
+        // 按照浏览量降序排序
+        queryWrapper.orderByDesc("liulanliang");
+        // 限制返回4条数据
+        queryWrapper.last("LIMIT 4");
+        List<Jingdianxinxi> hotList = jingdianxinxiMapper.selectList(queryWrapper);
+        return Result.success(hotList);
+    }
 
     // 获取景点列表
     @GetMapping("/list")
