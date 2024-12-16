@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,23 +22,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/travel/admins")
-@CrossOrigin(originPatterns = "*", allowCredentials = "true")
 public class AdminsController {
 
     @Autowired
     private AdminsServiceImpl adminsService;
-
-    //测试
-//    @GetMapping("/test")
-//    public Result test() {
-//        return Result.success(adminsService.list());
-//    }
-//
-//    //测试
-//    @GetMapping("/test2")
-//    public String test2() {
-//        return "adminsService.list()";
-//    }
 
     //管理员登录
     @PostMapping("/login")
@@ -50,7 +39,24 @@ public class AdminsController {
         return adminsService.logout();
     }
 
-    //
-
+    // 获取当前登录用户信息
+    @GetMapping("/info")
+    public Result info(@RequestHeader("token") String token) {
+        try {
+            // 根据token获取用户信息
+            Admins admin = adminsService.getAdminByToken(token);
+            if (admin != null) {
+                // 清除敏感信息
+                admin.setPwd(null);
+                Map<String, Object> data = new HashMap<>();
+                data.put("username", admin.getUsername());
+                return Result.success(data);
+            }
+            return Result.fail("获取用户信息失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail("获取用户信息失败");
+        }
+    }
 
 }

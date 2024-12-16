@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,8 +35,11 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
     @Autowired
     private HttpServletRequest request;
 
+    // 存储token和用户ID的映射关系
+    private static final Map<String, Integer> tokenMap = new ConcurrentHashMap<>();
+
     public Result login(AdminLoginDTO adminLoginDTO) {
-        System.out.println("开始���理登录：" + adminLoginDTO); // 调试日志
+        //System.out.println("开始处理登录：" + adminLoginDTO); // 调试日志
 
         // 1. 根据用户名查询
         LambdaQueryWrapper<Admins> queryWrapper = new LambdaQueryWrapper<>();
@@ -62,11 +66,14 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
         String tokenKey = "admin:token:" + token;
         redisTemplate.opsForValue().set(tokenKey, admin, 30, TimeUnit.MINUTES);
 
+        // 6. 保存token和用户ID的映射关系
+        tokenMap.put(token, admin.getId());
+
         // 返回数据时确保格式正确
         Map<String, Object> data = new HashMap<>();
         data.put("token", token);
         data.put("userInfo", admin);
-        
+
         return Result.success(data);  // 确保返回code为200
     }
 
@@ -80,7 +87,19 @@ public class AdminsServiceImpl extends ServiceImpl<AdminsMapper, Admins> impleme
         // 2. 从redis中删除token
         String tokenKey = "admin:token:" + token;
         redisTemplate.delete(tokenKey);
-        
+
+        // 3. 清除token和用户ID的映射关系
+        tokenMap.remove(token);
+
         return Result.success("退出成功");
+    }
+
+    // 根据token获取用户信息
+    public Admins getAdminByToken(String token) {
+        Integer userId = tokenMap.get(token);
+        if (userId != null) {
+            return this.getById(userId);
+        }
+        return null;
     }
 }
