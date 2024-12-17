@@ -83,7 +83,7 @@ const routes = [
       {
         path: 'link',
         component: () => import('@/views/admin/link/ListView.vue'),
-        meta: { title: '友情链接' }
+        meta: { title: '友���接' }
       }
     ]
   },
@@ -92,6 +92,33 @@ const routes = [
     name: 'userHome',
     component: () => import('@/views/user/HomeView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/scenic/detail/:id',
+    name: 'ScenicDetail',
+    component: () => import('@/views/user/scenic/DetailView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/scenic/list',
+    name: 'ScenicList',
+    component: () => import('@/views/user/scenic/ListView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/route',
+    name: 'RouteList',
+    component: () => import('@/views/user/route/ListView.vue')
+  },
+  {
+    path: '/food',
+    name: 'FoodList',
+    component: () => import('@/views/user/food/ListView.vue')
+  },
+  {
+    path: '/news',
+    name: 'NewsList',
+    component: () => import('@/views/user/news/ListView.vue')
   }
 ]
 
