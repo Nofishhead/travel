@@ -33,17 +33,43 @@ public class YudingController {
     // 添加预定
     @PostMapping
     public Result add(@RequestBody Yuding yuding) {
-        // 生成订单号
-        yuding.setDingdanhao("DD" + System.currentTimeMillis());
-        // 设置默认状态
-        yuding.setZhuangtai("待确认");
-        // 设置是否支付
-        yuding.setIszf("否");
-        // 设置添加时间
-        yuding.setAddtime(LocalDateTime.now());
+        try {
+            System.out.println("收到预订请求：" + yuding.toString());
+            
+            // 生成订单号
+            yuding.setDingdanhao("DD" + System.currentTimeMillis());
+            // 设置默认状态
+            yuding.setZhuangtai("待确认");
+            // 设置是否支付
+            yuding.setIszf("否");
+            // 设置添加时间
+            yuding.setAddtime(LocalDateTime.now());
+            
+            // 打印完整的预订信息用于调试
+            System.out.println("预订信息：" + yuding);
 
-        boolean success = yudingService.save(yuding);
-        return success ? Result.success() : Result.fail("预定失败");
+            // 验证必要字段
+            if (yuding.getLvyouxianluid() == null || 
+                yuding.getXianlubianhao() == null ||
+                yuding.getXianlumingcheng() == null ||
+                yuding.getYudingrenxingming() == null ||
+                yuding.getLianxifangshi() == null ||
+                yuding.getYudingshijian() == null ||
+                yuding.getYudingren() == null) {
+                return Result.fail("缺少必要的预订信息");
+            }
+
+            boolean success = yudingService.save(yuding);
+            if (success) {
+                return Result.success(yuding);
+            } else {
+                return Result.fail("预订失败，请稍后重试");
+            }
+        } catch (Exception e) {
+            System.err.println("预订失败：" + e.getMessage());
+            e.printStackTrace();
+            return Result.fail("预订失败：" + e.getMessage());
+        }
     }
 
     // 修改预定
