@@ -35,6 +35,12 @@ public class JingdianxinxiController {
     public Result list() {
         // 获取景点列表（包含地区名称）
         List<Map<String, Object>> list = jingdianxinxiMapper.selectListWithDiqu();
+        
+        // 添加调试日志
+        for (Map<String, Object> item : list) {
+            System.out.println("景点图片路径: " + item.get("tupian"));
+        }
+        
         return Result.success(list);
     }
 

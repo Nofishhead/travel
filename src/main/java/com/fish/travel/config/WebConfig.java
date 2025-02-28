@@ -22,14 +22,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 获取项目根路径
         String projectPath = System.getProperty("user.dir");
-        // 添加对上传文件的访问支持
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/")
-                .setCachePeriod(0)  // 禁用缓存
-                .setCacheControl(CacheControl.noCache());  // 禁用缓存
+        registry.addResourceHandler("/**")  // 改为 /** 匹配所有路径
+                .addResourceLocations("file:" + projectPath + "/")  // 直接指向项目根目录
+                .setCachePeriod(0)
+                .setCacheControl(CacheControl.noCache());
         
-        System.out.println("文件上传路径映射: file:uploads/");
+        System.out.println("文件上传路径: " + projectPath);
     }
 }
