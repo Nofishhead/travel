@@ -35,12 +35,12 @@ public class JingdianxinxiController {
     public Result list() {
         // 获取景点列表（包含地区名称）
         List<Map<String, Object>> list = jingdianxinxiMapper.selectListWithDiqu();
-        
+
         // 添加调试日志
         for (Map<String, Object> item : list) {
             System.out.println("景点图片路径: " + item.get("tupian"));
         }
-        
+
         return Result.success(list);
     }
 
@@ -77,6 +77,8 @@ public class JingdianxinxiController {
     @GetMapping("/{id}")
     public Result getById(@PathVariable Integer id) {
         Jingdianxinxi jingdianxinxi = jingdianxinxiMapper.selectById(id);
+        System.out.println("1");
         return jingdianxinxi != null ? Result.success(jingdianxinxi) : Result.fail("景点不存在");
+
     }
 }
