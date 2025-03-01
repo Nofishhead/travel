@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import AdminLayout from '@/layouts/AdminLayout.vue'
+import AdminLayout from '@/views/layout/AdminLayout.vue'
 
 const routes = [
   {

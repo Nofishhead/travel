@@ -2,15 +2,18 @@
   <el-container class="admin-container">
     <!-- 侧边栏 -->
     <el-aside :width="isCollapse ? '64px' : '200px'">
-      <div class="logo">{{ isCollapse ? '旅游' : '旅游管理系统' }}</div>
+      <div class="logo" :class="{ 'collapsed': isCollapse }">
+        {{ isCollapse ? '旅游' : '旅游管理系统' }}
+      </div>
       <el-menu
         :router="true"
         :default-active="$route.path"
+        :collapse="isCollapse"
+        :collapse-transition="true"
         class="el-menu-vertical"
         background-color="#304156"
         text-color="#fff"
         active-text-color="#409EFF"
-        :collapse="isCollapse"
       >
         <el-menu-item index="/admin/dashboard">
           <el-icon><Monitor /></el-icon>
@@ -88,9 +91,9 @@
     <el-container>
       <el-header>
         <div class="header-left">
-          <el-icon class="fold-btn" @click="isCollapse = !isCollapse">
-            <Fold v-if="!isCollapse"/>
-            <Expand v-else/>
+          <el-icon class="fold-btn" @click="toggleCollapse">
+            <Fold v-if="!isCollapse" />
+            <Expand v-else />
           </el-icon>
           <!-- <breadcrumb /> -->
         </div>
@@ -141,6 +144,10 @@ const router = useRouter()
 const userStore = useUserStore()
 const isCollapse = ref(false)
 
+const toggleCollapse = () => {
+  isCollapse.value = !isCollapse.value
+}
+
 const handleCommand = async (command) => {
   switch (command) {
     case 'profile':
@@ -183,11 +190,16 @@ const handleCommand = async (command) => {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  transition: all 0.3s;
+}
+
+.logo.collapsed {
+  padding: 0 10px;
 }
 
 .el-aside {
   background-color: #304156;
-  transition: width 0.3s;
+  transition: width 0.3s ease;
   .el-menu {
     border-right: none;
   }
@@ -209,7 +221,13 @@ const handleCommand = async (command) => {
     font-size: 20px;
     cursor: pointer;
     margin-right: 20px;
+    color: #333;
+    transition: transform 0.3s;
   }
+}
+
+.header-left:hover .fold-btn {
+  color: #409EFF;
 }
 
 .header-right {
