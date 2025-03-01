@@ -157,14 +157,10 @@ const handleCommand = async (command) => {
         await userStore.logout()
 
         ElMessage.success('退出成功')
-        // 使用 nextTick 确保状态更新后再跳转
-        nextTick(() => {
-          router.push('/login')
-        })
+        router.replace('/admin/login')
       } catch (error) {
         console.error('退出失败:', error)
-        // 即使退出失败也要跳转到登录页
-        router.push('/login')
+        router.replace('/admin/login')
       }
       break
   }

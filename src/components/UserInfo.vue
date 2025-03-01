@@ -18,16 +18,18 @@ import { ElMessage } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import request from '@/utils/request'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const userInfo = ref({})
+const userStore = useUserStore()
 
 // 获取用户信息
 const getUserInfo = async () => {
   try {
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push('/login')
+      router.push('/admin/login')
       return
     }
 
@@ -43,7 +45,7 @@ const getUserInfo = async () => {
     console.error('获取用户信息失败:', error)
     // 如果获取用户信息失败，直接跳转到登录页
     localStorage.removeItem('token')
-    router.push('/login')
+    router.push('/admin/login')
   }
 }
 
@@ -62,7 +64,7 @@ const handleCommand = (command) => {
       console.error('退出登录失败:', error)
     } finally {
       localStorage.removeItem('token')
-      router.push('/login')
+      router.push('/admin/login')
     }
   }
 }
