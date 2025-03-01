@@ -114,11 +114,6 @@ const routes = [
     path: '/food',
     name: 'FoodList',
     component: () => import('@/views/user/food/ListView.vue')
-  },
-  {
-    path: '/news',
-    name: 'NewsList',
-    component: () => import('@/views/user/news/ListView.vue')
   }
 ]
 

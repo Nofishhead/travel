@@ -163,7 +163,9 @@ const getCategories = async () => {
 const getImageUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http')) return path
-  return `${baseUrl}${path}`
+  // 移除可能的重复路径
+  const cleanPath = path.replace(/^uploads\//, '')
+  return `${baseUrl}/uploads/${cleanPath}`
 }
 
 // 图片上传成功

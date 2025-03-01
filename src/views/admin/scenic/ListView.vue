@@ -165,31 +165,11 @@ const getList = async () => {
 
 // 处理图片URL
 const getImageUrl = (path) => {
-  console.log('原始路径:', path);
-  if (!path) {
-    return `${baseUrl}/uploads/scenic/default.jpg`;
-  }
-
-  // 如果路径包含多个图片（以逗号分隔），只取第一个
-  if (path.includes(',')) {
-    path = path.split(',')[0];
-  }
-
-  if (path.startsWith('http')) {
-    return path;
-  }
-
-  // 移除路径中���余的 'upload/' 前缀
-  path = path.replace('upload/', '');
-
-  // 确保路径以 /uploads/scenic 开头
-  if (!path.startsWith('/uploads/scenic/')) {
-    path = '/uploads/scenic/' + path;
-  }
-
-  const fullUrl = `${baseUrl}${path}`;
-  console.log('处理后的URL:', fullUrl);
-  return fullUrl;
+  if (!path) return ''
+  if (path.startsWith('http')) return path
+  // 移除重复的路径前缀
+  const cleanPath = path.replace(/^uploads\/scenic\//, '')
+  return `${baseUrl}/uploads/scenic/${cleanPath}`
 }
 
 // 图片上传成功
